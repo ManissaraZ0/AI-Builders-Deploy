@@ -108,10 +108,11 @@ partModel = 'Model/'
 st.title('🎼 Classical Music Generator 🎹')
 
 file_names = [fn for fn in os.listdir(partDataset)]
-
+file_names.sort()
 Original_song = st.selectbox('Please select classical music', file_names, key='1')
 
 model_names = [fn for fn in os.listdir(partModel)]
+model_names.sort()
 model_choice = st.selectbox('Select your desired artist', model_names, key='1')
 
 num_predictions = st.slider( "Sequence Lenght of Note", min_value=100 , max_value=500 ,value=300, step=1)
