@@ -8,6 +8,7 @@ import collections
 import pretty_midi
 import tensorflow as tf
 import os
+import glob
 from scipy.io import wavfile
 from midi2audio import FluidSynth
 
@@ -101,45 +102,17 @@ def display_audio(pm: pretty_midi.PrettyMIDI):
   return waveform
 
 _SAMPLING_RATE = 16000
+partDataset = 'Dataset/'
 partModel = 'Model/'
 
-st.title('👉 Classical Music Generator 👈')
+st.title('🎼 Classical Music Generator 🎹')
 
-Original_song = st.selectbox('Please select classical music', [
-    'Albéniz','Bach','Beethoven','Brahms','Chopin','Clementi','Debussy','Grieg','Haydn','Mendelssohn','Mozart','Mussorgsky','Schubert','Tchaikovsky'], key='1')
+file_names = [fn for fn in os.listdir(partDataset)]
 
-partDataset = 'Dataset/'
-if Original_song == 'Albéniz':
-    inputs_ = 'Albéniz.mid'
-if Original_song == 'Bach':
-    inputs_ = 'Bach.mid'
-if Original_song == 'Beethoven':
-    inputs_ = 'Beethoven.mid'
-if Original_song == 'Brahms':
-    inputs_ = 'Brahms.mid'
-if Original_song == 'Chopin':
-    inputs_ = 'Chopin.mid'
-if Original_song == 'Clementi':
-    inputs_ = 'Clementi.mid'
-if Original_song == 'Debussy':
-    inputs_ = 'Debussy.mid'
-if Original_song == 'Grieg':
-    inputs_ = 'Grieg.mid'
-if Original_song == 'Haydn':
-    inputs_ = 'Haydn.mid'
-if Original_song == 'Mendelssohn':
-    inputs_ = 'Mendelssohn.mid'
-if Original_song == 'Mozart':
-    inputs_ = 'Mozart.mid'
-if Original_song == 'Mussorgsky':
-    inputs_ = 'Mussorgsky.mid'
-if Original_song == 'Schubert':
-    inputs_ = 'Schubert.mid'
-if Original_song == 'Tchaikovsky':
-    inputs_ = 'Tchaikovsky.mid'
+Original_song = st.selectbox('Please select classical music', file_names, key='1')
 
-model_choice = st.selectbox('Select your desired artist', [
-    'Albéniz','Bach','Beethoven','Brahms','Chopin','Clementi','Debussy','Grieg','Haydn','Mendelssohn','Mozart','Mussorgsky','Schubert','Tchaikovsky'], key='1')
+model_names = [fn for fn in os.listdir(partModel)]
+model_choice = st.selectbox('Select your desired artist', model_names, key='1')
 
 num_predictions = st.slider( "Sequence Lenght of Note", min_value=100 , max_value=500 ,value=300, step=1)
 
@@ -150,17 +123,17 @@ vocab_size = 128 # ที่เป็นค่า 128 เพราะใช้�
 key_order = ['pitch', 'step', 'duration']
 
 if submit:
-    midi_data = pretty_midi.PrettyMIDI(getFile(partDataset + inputs_))
+    midi_data = pretty_midi.PrettyMIDI(getFile(partDataset + Original_song))
     for instrument in midi_data.instruments:
         instrument_name = pretty_midi.program_to_instrument_name(instrument.program)
-    raw_notes = midi_to_notes(getFile(partDataset + inputs_))
+    raw_notes = midi_to_notes(getFile(partDataset + Original_song))
 
     temperature = 2.0
 
     sample_notes = np.stack([raw_notes[key] for key in key_order], axis=1)
     input_notes = (sample_notes[:seq_length] / np.array([vocab_size, 1, 1]))
 
-    model = tf.keras.models.load_model("./" + partModel + model_choice + '.h5', custom_objects={'mse_with_positive_pressure': mse_with_positive_pressure})
+    model = tf.keras.models.load_model("./" + partModel + model_choice, custom_objects={'mse_with_positive_pressure': mse_with_positive_pressure})
 
     st.info('Please wait.')
     generated_notes = []
