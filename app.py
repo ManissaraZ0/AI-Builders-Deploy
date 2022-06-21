@@ -96,6 +96,9 @@ def notes_to_midi(notes: pd.DataFrame,out_file: str, instrument_name: str,veloci
   pm.write(out_file)
   return pm
 
+def display_audio(pm: pretty_midi.PrettyMIDI):
+  waveform = pm.fluidsynth(fs=_SAMPLING_RATE)
+
 _SAMPLING_RATE = 16000
 partModel = 'Model/'
 
@@ -156,9 +159,7 @@ if submit:
     sample_notes = np.stack([raw_notes[key] for key in key_order], axis=1)
     input_notes = (sample_notes[:seq_length] / np.array([vocab_size, 1, 1]))
 
-    st.success('Already Load Midi song!')
     model = tf.keras.models.load_model("./" + partModel + model_choice + '.h5', custom_objects={'mse_with_positive_pressure': mse_with_positive_pressure})
-    st.success('Already Load Model!')
 
     generated_notes = []
     prev_start = 0
@@ -175,17 +176,9 @@ if submit:
     generated_notes = pd.DataFrame(generated_notes, columns=(*key_order, 'start', 'end'))
 
     out_pm = notes_to_midi(generated_notes, "output.mid", instrument_name=instrument_name)
-    st.success('Congratulation!')
+    text_summary = 'Generate Music From Music => ' + Original_song + ', Artist => ' + model_choice + ' Note => ' + num_predictions
+    st.success(text_summary)
     st.markdown("---")
     # play music
-    st.info(out_pm.fluidsynth())
-    with st.spinner(f"Transcribing to FluidSynth"):
-        audio_data = out_pm.fluidsynth()
-        audio_data = np.int16(
-            audio_data / np.max(np.abs(audio_data)) * 32767 * 0.9
-        )  # -- Normalize for 16 bit audio https://github.com/jkanner/streamlit-audio/blob/main/helper.py
-
-        virtualfile = io.BytesIO()
-        wavfile.write(virtualfile, 44100, audio_data)
-    st.audio(virtualfile)
+    st.audio(display_audio(out_pm))
     st.markdown("Download the audio by right-clicking on the media player")
