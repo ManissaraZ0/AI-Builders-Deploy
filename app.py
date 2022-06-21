@@ -8,6 +8,8 @@ import collections
 import pretty_midi
 import tensorflow as tf
 import os
+import io
+from scipy.io import wavfile
 
 BASE_PATH = '.'
 def getFile(x):
@@ -176,5 +178,14 @@ if submit:
     st.success('Congratulation!')
     st.markdown("---")
     # play music
-    st.audio(out_pm.fluidsynth(fs = _SAMPLING_RATE))
+    with st.spinner(f"Transcribing to FluidSynth"):
+        midi_data = pretty_midi.PrettyMIDI(out_pm)
+        audio_data = midi_data.fluidsynth()
+        audio_data = np.int16(
+            audio_data / np.max(np.abs(audio_data)) * 32767 * 0.9
+        )  # -- Normalize for 16 bit audio https://github.com/jkanner/streamlit-audio/blob/main/helper.py
+
+        virtualfile = io.BytesIO()
+        wavfile.write(virtualfile, 44100, audio_data)
+    st.audio(virtualfile)
     st.markdown("Download the audio by right-clicking on the media player")
