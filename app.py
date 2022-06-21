@@ -162,7 +162,7 @@ if submit:
     audio_bytes = audio_file.read()
     st.audio(audio_bytes)
     with open('output.mid', 'rb') as f:
-      st.download_button('Download MIDI', f, file_name= Original_song + "_" + model_choice + "_" + str(num_predictions)+ ".mid")
+      st.download_button('Download MIDI', f, file_name= "output.mid")
     st.markdown("Download the audio by right-clicking on the media player")
 
 st.markdown("---")
