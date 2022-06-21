@@ -2,4 +2,4 @@ pretty_midi
 pyfluidsynth
 seaborn
 tensorflow
-pysdl2
+midi2audio

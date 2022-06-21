@@ -8,8 +8,8 @@ import collections
 import pretty_midi
 import tensorflow as tf
 import os
-import io
 from scipy.io import wavfile
+from midi2audio import FluidSynth
 
 BASE_PATH = '.'
 def getFile(x):
@@ -182,5 +182,9 @@ if submit:
     text_summary = 'Generate From Music =>  ' + Original_song + ' ,  Artist =>  ' + model_choice + ' ,  Note =>  ' + str(num_predictions) + '.'
     st.success(text_summary)
     # play music
-    st.audio(display_audio(out_pm))
+    fs = FluidSynth()
+    fs.midi_to_audio('output.mid', 'output.wav')
+    audio_file = open('output.wav', 'rb')
+    audio_bytes = audio_file.read()
+    st.audio(audio_bytes)
     st.markdown("Download the audio by right-clicking on the media player")
