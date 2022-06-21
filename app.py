@@ -98,6 +98,7 @@ def notes_to_midi(notes: pd.DataFrame,out_file: str, instrument_name: str,veloci
 
 def display_audio(pm: pretty_midi.PrettyMIDI):
   waveform = pm.fluidsynth(fs=_SAMPLING_RATE)
+  return waveform
 
 _SAMPLING_RATE = 16000
 partModel = 'Model/'
@@ -177,9 +178,9 @@ if submit:
     generated_notes = pd.DataFrame(generated_notes, columns=(*key_order, 'start', 'end'))
 
     out_pm = notes_to_midi(generated_notes, "output.mid", instrument_name=instrument_name)
-    text_summary = 'Generate Music From Music => ' + Original_song + ', Artist => ' + model_choice + ' Note => ' + str(num_predictions) + '.'
-    st.success(text_summary)
     st.markdown("---")
+    text_summary = 'Generate From Music =>  ' + Original_song + ' ,  Artist =>  ' + model_choice + ' ,  Note =>  ' + str(num_predictions) + '.'
+    st.success(text_summary)
     # play music
     st.audio(display_audio(out_pm))
     st.markdown("Download the audio by right-clicking on the media player")
