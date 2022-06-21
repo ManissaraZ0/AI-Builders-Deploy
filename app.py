@@ -175,14 +175,3 @@ if uploaded_files is not None:
     f.write((uploaded_files).getbuffer())
     st.success("File Midi Saved")
     file_names = [fn for fn in os.listdir(partDataset)]
-
-st.markdown("---")
-st.write("Upload model")
-uploaded_file = st.file_uploader("Choose a model file", type=["h5"])
-if uploaded_file is not None:
-  file_details = {"filename":uploaded_file.name, "filetype":uploaded_file.type,"filesize":uploaded_file.size}
-  st.write(file_details)
-  with open(os.path.join("Model",uploaded_file.name),"wb") as f:
-    f.write((uploaded_file).getbuffer())
-    st.success("File Model Saved")
-    model_names = [fn for fn in os.listdir(partModel)]
