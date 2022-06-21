@@ -177,7 +177,7 @@ if submit:
     generated_notes = pd.DataFrame(generated_notes, columns=(*key_order, 'start', 'end'))
 
     out_pm = notes_to_midi(generated_notes, "output.mid", instrument_name=instrument_name)
-    text_summary = 'Generate Music From Music => ' + Original_song + ', Artist => ' + model_choice + ' Note => ' + num_predictions + '.'
+    text_summary = 'Generate Music From Music => ' + Original_song + ', Artist => ' + model_choice + ' Note => ' + str(num_predictions) + '.'
     st.success(text_summary)
     st.markdown("---")
     # play music
