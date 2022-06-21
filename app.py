@@ -161,6 +161,7 @@ if submit:
 
     model = tf.keras.models.load_model("./" + partModel + model_choice + '.h5', custom_objects={'mse_with_positive_pressure': mse_with_positive_pressure})
 
+    st.info('Please wait.')
     generated_notes = []
     prev_start = 0
     for _ in range(num_predictions):
@@ -176,7 +177,7 @@ if submit:
     generated_notes = pd.DataFrame(generated_notes, columns=(*key_order, 'start', 'end'))
 
     out_pm = notes_to_midi(generated_notes, "output.mid", instrument_name=instrument_name)
-    text_summary = 'Generate Music From Music => ' + Original_song + ', Artist => ' + model_choice + ' Note => ' + num_predictions
+    text_summary = 'Generate Music From Music => ' + Original_song + ', Artist => ' + model_choice + ' Note => ' + num_predictions + '.'
     st.success(text_summary)
     st.markdown("---")
     # play music
