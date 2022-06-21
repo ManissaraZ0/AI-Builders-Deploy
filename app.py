@@ -176,7 +176,6 @@ if submit:
         prev_start = start
 
     generated_notes = pd.DataFrame(generated_notes, columns=(*key_order, 'start', 'end'))
-    st.success(generated_notes.head(20))
 
     out_pm = notes_to_midi(generated_notes, "output.mid", instrument_name=instrument_name)
     st.markdown("---")
